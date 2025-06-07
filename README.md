@@ -506,16 +506,3 @@ jml_balita = c(394129, 946365, 377410, 368260, 209492, 588096, 107916, 532246,
 stunting_data_indonesia <- rbind(stunting_data_indonesia, total_row)
 ```
 **Kegunaan**: Menambahkan baris total ke dataset utama dengan iterasi baris.
-
-## Konteks Integratif dalam Aplikasi NutriTrack
-
-Semua komponen programming ini bekerja secara sinergis untuk:
-
-1. **Data Management**: Menggunakan data frame dan vector untuk menyimpan referensi WHO dan data stunting Indonesia
-2. **User Interaction**: Menggunakan variable input dan conditional logic untuk interface yang responsif
-3. **Calculation Engine**: Menggunakan operasi aritmatika untuk menghitung Z-score dan klasifikasi stunting
-4. **Dynamic UI**: Menggunakan percabangan dan pengulangan untuk generate konten yang adaptif
-5. **Data Visualization**: Menggunakan logical operations untuk kontrol tampilan chart dan tabel
-6. **Content Generation**: Menggunakan loops untuk membuat multiple UI components dengan pola yang sama
-
-Aplikasi ini mendemonstrasikan penggunaan komprehensif semua aspek programming R dalam konteks Shiny untuk solusi kesehatan masyarakat yang praktis.
