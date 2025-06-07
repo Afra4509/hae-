@@ -1,44 +1,51 @@
-# Identifikasi Lengkap Komponen Programming dalam Aplikasi NutriTrack Line 1-612
+# Identifikasi Lengkap Komponen Programming dalam Aplikasi NutriTrack
 
-## a. Tipe Data
+## A. Tipe Data
 
 ### 1. **Numeric (Bilangan Desimal)**
 ```r
-# Baris 13-15: Data median tinggi badan WHO
+# Data median tinggi badan WHO
 median_tb = c(49.9, 58.4, 65.7, 70.6, 75.7, 78.4, 80.7, 87.8, 94.9, 102.9, 110.0,
               49.1, 57.3, 64.3, 69.8, 74.0, 76.6, 79.2, 86.4, 93.9, 101.6, 108.4)
 ```
 **Kegunaan**: Menyimpan nilai median tinggi badan dalam cm sesuai standar WHO untuk perhitungan Z-score.
 
 ```r
-# Baris 16: Data standar deviasi
+# Data standar deviasi
 sd_tb = rep(c(1.8, 2.4, 2.7, 2.9, 3.3, 3.2, 3.3, 3.4, 3.8, 4.3, 4.9), 2)
 ```
 **Kegunaan**: Menyimpan nilai standar deviasi untuk menghitung sebaran normal dalam analisis stunting.
 
 ```r
-# Baris 22-26: Data prevalensi stunting per provinsi
+# Data prevalensi stunting per provinsi
 prevalensi = c(6.2, 3.0, 8.1, 2.5, 2.7, 1.4, 3.9, 2.8, 3.3, 3.1, 1.6, 4.9, 8.6, 7.7, 
                5.8, 2.9, 3.5, 12.7, 14.8, 8.7, 11.1, 8.2, 9.0, 6.7, 1.7, 10.4, 7.3, 
                10.3, 5.4, 23.9, 5.4, 8.7, 9.3, 9.9, 4.4, 12.7, 10.1, 7.8)
 ```
 **Kegunaan**: Menyimpan persentase prevalensi stunting di setiap provinsi untuk analisis geografis.
 
+```r
+# Perhitungan Z-Score dalam server logic
+z_score <- (height() - median_height) / sd_height
+results$zscore <- round(z_score, 2)
+```
+**Kegunaan**: Menghitung dan menyimpan nilai Z-Score hasil perhitungan status gizi anak dengan pembulatan 2 desimal.
+
 ### 2. **Integer (Bilangan Bulat)**
 ```r
-# Baris 11: Usia dalam bulan
+# Usia dalam bulan
 age_months = rep(c(0, 3, 6, 9, 12, 15, 18, 24, 36, 48, 60), 2)
 ```
 **Kegunaan**: Menyimpan rentang usia balita dalam bulan untuk standar pertumbuhan WHO.
 
 ```r
-# Baris 19-21: Jumlah balita per provinsi
+# Jumlah balita per provinsi
 jml_balita = c(394129, 946365, 377410, 368260, 209492, 588096, 107916, 532246, ...)
 ```
 **Kegunaan**: Menyimpan jumlah populasi balita di setiap provinsi untuk analisis demografis.
 
 ```r
-# Baris 30-33: Data total nasional
+# Data total nasional
 jml_balita = 15904224,
 jml_stunting = 728559 + 238660,
 pendek = 728559,
@@ -46,50 +53,64 @@ sangat_pendek = 238660
 ```
 **Kegunaan**: Menyimpan agregasi data stunting nasional untuk statistik keseluruhan.
 
+```r
+# Index pencarian dalam server logic
+age_idx <- which(abs(who_data$age_months - age()) == min(abs(who_data$age_months - age())))
+closest_age_idx[1]
+```
+**Kegunaan**: Menyimpan indeks untuk mencari umur terdekat di data WHO dan mengambil indeks pertama.
+
 ### 3. **Character (Teks/String)**
 ```r
-# Baris 12: Kategori jenis kelamin
+# Kategori jenis kelamin
 sex = rep(c("Male", "Female"), each = 11)
 ```
 **Kegunaan**: Menyimpan kategori gender untuk diferensiasi standar pertumbuhan.
 
 ```r
-# Baris 17-18: Nama provinsi
+# Nama provinsi
 provinsi = c("ACEH", "SUMATERA UTARA", "SUMATERA BARAT", "RIAU", "JAMBI", ...)
 ```
 **Kegunaan**: Menyimpan identifier wilayah geografis Indonesia untuk mapping data stunting.
 
 ```r
-# Baris 34: Label total
-provinsi = "TOTAL"
-```
-**Kegunaan**: Memberikan label untuk baris total dalam dataset.
-
-```r
-# Baris 44-45: Konfigurasi tema dashboard
+# Konfigurasi tema dashboard
 skin = "blue"
 title = span(icon("child-reaching"), "NutriTrack | Deteksi Dini Stunting")
 ```
 **Kegunaan**: Mengatur tampilan visual dan branding aplikasi.
 
+```r
+# Status gizi dalam server logic
+results$status <- "Normal"
+results$color <- "#28a745"
+```
+**Kegunaan**: Menyimpan status gizi anak dan kode warna hex untuk visualisasi status.
+
 ### 4. **Logical (Boolean)**
 ```r
-# Baris 183: Kontrol pengurutan data
+# Kontrol pengurutan data
 checkboxInput("sort_data", "Urutkan dari Tertinggi", value = TRUE)
 ```
 **Kegunaan**: Menyimpan status TRUE/FALSE untuk mengontrol pengurutan data pada visualisasi.
 
 ```r
-# Baris 68: Status header solid
+# Status header solid
 solidHeader = TRUE
 ```
 **Kegunaan**: Mengatur style header box dalam dashboard (solid atau transparan).
 
-## b. Struktur Data
+```r
+# Pengecekan input kosong dalam server logic
+is.null(input$age_input) || input$age_input == ""
+```
+**Kegunaan**: Mengecek apakah input kosong (TRUE/FALSE) untuk validasi form.
+
+## B. Struktur Data
 
 ### 1. **Data Frame**
 ```r
-# Baris 10-16: Dataset standar WHO
+# Dataset standar WHO
 who_data <- data.frame(
   age_months = rep(c(0, 3, 6, 9, 12, 15, 18, 24, 36, 48, 60), 2),
   sex = rep(c("Male", "Female"), each = 11),
@@ -100,7 +121,7 @@ who_data <- data.frame(
 **Kegunaan**: Menyimpan referensi standar pertumbuhan WHO dalam format tabular terstruktur untuk lookup Z-score.
 
 ```r
-# Baris 19-27: Dataset stunting Indonesia
+# Dataset stunting Indonesia
 stunting_data_indonesia <- data.frame(
   provinsi = c("ACEH", "SUMATERA UTARA", ...),
   jml_balita = c(394129, 946365, ...),
@@ -114,7 +135,7 @@ stunting_data_indonesia <- data.frame(
 **Kegunaan**: Menyimpan data komprehensif stunting per provinsi dalam struktur relational database.
 
 ```r
-# Baris 30-36: Data total nasional
+# Data total nasional
 total_row <- data.frame(
   provinsi = "TOTAL",
   jml_balita = 15904224,
@@ -127,29 +148,46 @@ total_row <- data.frame(
 ```
 **Kegunaan**: Menyimpan data agregat nasional dalam format yang konsisten dengan data provinsi.
 
+```r
+# Data tren nasional dalam server logic
+trend_data <- data.frame(
+  tahun = c(2018, 2019, 2021, 2022),
+  prevalensi = c(30.8, 27.7, 24.4, 21.6)
+)
+```
+**Kegunaan**: Menyimpan data tren prevalensi stunting nasional untuk visualisasi grafik.
+
 ### 2. **Vector**
 ```r
-# Baris 11: Vector integer untuk usia
+# Vector integer untuk usia
 c(0, 3, 6, 9, 12, 15, 18, 24, 36, 48, 60)
 ```
 **Kegunaan**: Menyimpan sekuens usia dalam bulan untuk referensi kurva pertumbuhan.
 
 ```r
-# Baris 12: Vector karakter untuk gender
+# Vector karakter untuk gender
 c("Male", "Female")
 ```
 **Kegunaan**: Menyimpan dua kategori jenis kelamin untuk klasifikasi standar WHO.
 
 ```r
-# Baris 13-15: Vector numeric untuk median tinggi badan
+# Vector numeric untuk median tinggi badan
 c(49.9, 58.4, 65.7, 70.6, 75.7, 78.4, 80.7, 87.8, 94.9, 102.9, 110.0,
   49.1, 57.3, 64.3, 69.8, 74.0, 76.6, 79.2, 86.4, 93.9, 101.6, 108.4)
 ```
 **Kegunaan**: Menyimpan nilai referensi tinggi badan normal untuk setiap usia dan gender.
 
+```r
+# Vector untuk visualisasi dalam server logic
+age_range <- seq(0, 60, by = 1)
+color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
+                      ifelse(sorted_data$prevalensi >= 25, 'orange', 'yellow'))
+```
+**Kegunaan**: Membuat rentang umur untuk grafik dan menentukan warna berdasarkan prevalensi stunting.
+
 ### 3. **List (dalam struktur UI)**
 ```r
-# Baris 85-90: Menu navigasi
+# Menu navigasi
 sidebarMenu(
   id = "tabs",
   menuItem("Kalkulator Stunting", tabName = "calculator", icon = icon("calculator")),
@@ -161,22 +199,33 @@ sidebarMenu(
 **Kegunaan**: Mengorganisir item menu dalam struktur list untuk navigasi multi-tab.
 
 ```r
-# Baris 107-111: Pilihan radio button
+# Pilihan radio button
 choices = c("Laki-laki" = "Male", "Perempuan" = "Female")
 ```
 **Kegunaan**: Menyimpan pasangan label-value untuk input jenis kelamin.
 
 ```r
-# Baris 174-177: Pilihan dropdown chart
+# Pilihan dropdown chart
 choices = c("Persentase Stunting" = "percentage", 
             "Jumlah Kasus Stunting" = "cases",
             "Jumlah Balita" = "toddlers")
 ```
 **Kegunaan**: Menyimpan opsi visualisasi data dengan key-value mapping.
 
+```r
+# List reaktif dalam server logic
+results <- reactiveValues(
+  zscore = NULL,
+  status = NULL,
+  color = NULL,
+  status_text = NULL
+)
+```
+**Kegunaan**: List reaktif untuk menyimpan hasil analisis gizi anak yang dapat diupdate secara dinamis.
+
 ### 4. **Named List (lapply structure)**
 ```r
-# Baris 235-240: List untuk generate cards nutrisi
+# List untuk generate cards nutrisi
 lapply(list(
   list("Protein", "egg", "Telur, ikan, ayam, daging, tempe, tahu, kacang-kacangan"),
   list("Kalsium", "bone", "Susu, keju, yogurt, ikan teri, sayuran hijau"),
@@ -186,144 +235,187 @@ lapply(list(
 ```
 **Kegunaan**: Menyimpan data terstruktur untuk generate multiple UI components dengan pola yang sama.
 
-## c. Variable
+## C. Variable
 
 ### 1. **Input Variables (User Interface)**
 ```r
-# Baris 101: Variable nama anak
+# Variable nama anak
 textInput("name", "Nama Anak", placeholder = "Masukkan nama anak")
 ```
 **Kegunaan**: Variable `name` menyimpan input nama anak dari user untuk personalisasi hasil analisis.
 
 ```r
-# Baris 102: Variable usia anak
+# Variable usia anak
 textInput("age_input", "Usia (bulan)", placeholder = "Contoh: 12 atau usia anak 12")
 ```
 **Kegunaan**: Variable `age_input` menyimpan usia anak dalam bulan untuk perhitungan Z-score.
 
 ```r
-# Baris 105: Variable jenis kelamin
+# Variable jenis kelamin
 awesomeRadio("sex", "Jenis Kelamin", choices = c("Laki-laki" = "Male", "Perempuan" = "Female"))
 ```
 **Kegunaan**: Variable `sex` menyimpan pilihan gender untuk menentukan standar WHO yang sesuai.
 
 ```r
-# Baris 106: Variable tinggi badan
+# Variable tinggi badan
 textInput("height_input", "Tinggi Badan (cm)", placeholder = "Contoh: 60 atau tb anak 60")
 ```
 **Kegunaan**: Variable `height_input` menyimpan tinggi badan anak untuk analisis status gizi.
 
 ### 2. **Control Variables**
 ```r
-# Baris 84: Variable ID menu
+# Variable ID menu
 id = "tabs"
 ```
 **Kegunaan**: Variable `tabs` mengontrol navigasi antar halaman dalam dashboard.
 
 ```r
-# Baris 108: Variable tombol aksi
+# Variable tombol aksi
 actionBttn("calculate", "Analisis Status Gizi", ...)
 ```
 **Kegunaan**: Variable `calculate` trigger untuk memulai perhitungan status gizi anak.
 
 ```r
-# Baris 174: Variable tipe chart
+# Variable tipe chart
 selectInput("chart_type", "Tampilkan Berdasarkan:", ...)
 ```
 **Kegunaan**: Variable `chart_type` mengontrol jenis visualisasi data yang ditampilkan.
 
 ```r
-# Baris 183: Variable sorting
+# Variable sorting
 checkboxInput("sort_data", "Urutkan dari Tertinggi", value = TRUE)
 ```
 **Kegunaan**: Variable `sort_data` mengontrol pengurutan data dari tinggi ke rendah atau sebaliknya.
 
 ### 3. **Configuration Variables**
 ```r
-# Baris 43: Variable tema aplikasi
+# Variable tema aplikasi
 skin = "blue"
 ```
 **Kegunaan**: Variable `skin` menentukan color scheme dashboard (blue theme).
 
 ```r
-# Baris 46: Variable lebar title
+# Variable lebar title
 titleWidth = 350
 ```
 **Kegunaan**: Variable `titleWidth` mengatur lebar area judul dashboard dalam pixel.
 
 ```r
-# Baris 49: Variable lebar sidebar
+# Variable lebar sidebar
 width = 300
 ```
 **Kegunaan**: Variable `width` menentukan lebar panel sidebar navigasi.
 
-### 4. **Output Variables**
+### 4. **Reactive Variables (Server Logic)**
 ```r
-# Baris 128: Variable output nama anak
+# Variable reaktif untuk input processing
+age <- reactive({...})
+height <- reactive({...})
+```
+**Kegunaan**: Variable reaktif menyimpan dan memproses input umur dan tinggi badan anak.
+
+```r
+# Variable perhitungan
+median_height <- who_data$median_tb[closest_age_idx]
+sd_height <- who_data$sd_tb[closest_age_idx]
+z_score <- (height() - median_height) / sd_height
+```
+**Kegunaan**: Variable menyimpan nilai median, standar deviasi, dan hasil perhitungan Z-Score.
+
+### 5. **Output Variables**
+```r
+# Variable output nama anak
 textOutput("child_name")
 ```
 **Kegunaan**: Variable `child_name` menampilkan nama anak yang diinput user di hasil analisis.
 
 ```r
-# Baris 135: Variable tabel hasil
+# Variable tabel hasil
 tableOutput("results_table")
 ```
 **Kegunaan**: Variable `results_table` menampilkan tabel hasil perhitungan status gizi.
 
 ```r
-# Baris 163: Variable plot pertumbuhan
+# Variable plot pertumbuhan
 plotlyOutput("growth_plot")
 ```
 **Kegunaan**: Variable `growth_plot` menampilkan kurva pertumbuhan interaktif.
 
-## d. Operasi Aritmatika
+```r
+# Variable status dalam server logic
+results$status
+results$status_text
+```
+**Kegunaan**: Variable menyimpan status gizi dan penjelasan status untuk ditampilkan ke user.
+
+## D. Operasi Aritmatika
 
 ### 1. **Penjumlahan (+)**
 ```r
-# Baris 32: Total kasus stunting
+# Total kasus stunting
 jml_stunting = 728559 + 238660
 ```
 **Kegunaan**: Menghitung total kasus stunting nasional dengan menjumlahkan kategori pendek dan sangat pendek.
 
-### 2. **Pengulangan/Repetisi (rep)**
+### 2. **Pengurangan (-) dan Pembagian (/) - Rumus Z-Score**
 ```r
-# Baris 11: Mengulang usia untuk 2 gender
+# Perhitungan Z-Score (Rumus Utama)
+z_score <- (height() - median_height) / sd_height
+```
+**Kegunaan**: Operasi pengurangan dan pembagian untuk menghitung status gizi berdasarkan standar WHO.
+
+```r
+# Pencarian nilai terdekat
+abs(who_data$age_months - age())
+```
+**Kegunaan**: Operasi pengurangan dan nilai absolut untuk mencari umur terdekat di data WHO.
+
+### 3. **Pembulatan**
+```r
+# Pembulatan hasil Z-Score
+results$zscore <- round(z_score, 2)
+```
+**Kegunaan**: Membulatkan Z-Score ke 2 desimal untuk tampilan yang lebih user-friendly.
+
+### 4. **Sequence Generation**
+```r
+# Rentang angka untuk visualisasi
+age_range <- seq(0, 60, by = 1)
+```
+**Kegunaan**: Membuat rentang angka 0-60 dengan interval 1 untuk grafik pertumbuhan.
+
+### 5. **Pengulangan/Repetisi (rep)**
+```r
+# Mengulang usia untuk 2 gender
 rep(c(0, 3, 6, 9, 12, 15, 18, 24, 36, 48, 60), 2)
 ```
 **Kegunaan**: Mengulangi sequence usia 2 kali (untuk laki-laki dan perempuan) dalam dataset WHO.
 
 ```r
-# Baris 16: Mengulang standar deviasi
+# Mengulang standar deviasi
 rep(c(1.8, 2.4, 2.7, 2.9, 3.3, 3.2, 3.3, 3.4, 3.8, 4.3, 4.9), 2)
 ```
 **Kegunaan**: Mengulangi nilai SD untuk kedua jenis kelamin dalam perhitungan Z-score.
 
 ```r
-# Baris 27: Mengulang tahun
+# Mengulang tahun
 rep(2023, 38)
 ```
 **Kegunaan**: Memberikan label tahun 2023 untuk semua 38 provinsi dalam dataset.
 
-### 3. **Operasi dalam Fungsi c() - Concatenation**
+### 6. **Operasi dalam Fungsi c() - Concatenation**
 ```r
-# Baris 13-15: Menggabungkan data median untuk laki-laki dan perempuan
+# Menggabungkan data median untuk laki-laki dan perempuan
 c(49.9, 58.4, ..., 110.0,    # Data laki-laki
   49.1, 57.3, ..., 108.4)    # Data perempuan
 ```
 **Kegunaan**: Menggabungkan dua set data median tinggi badan menjadi satu vector.
 
-### 4. **Perhitungan Z-Score (Implicit dalam server logic)**
-```r
-# Formula yang akan digunakan di server:
-# z_score = (tinggi_anak - median_who) / sd_who
-```
-**Kegunaan**: Menghitung deviasi tinggi anak dari standar WHO untuk klasifikasi stunting.
-
-## e. Operasi Logika
+## E. Operasi Logika
 
 ### 1. **Conditional Rendering (==)**
 ```r
-# Baris 93-94: Kondisi tampil panel
+# Kondisi tampil panel
 conditionalPanel(
   condition = "input.tabs == 'calculator'",
   # Panel hanya muncul jika tab calculator aktif
@@ -333,44 +425,58 @@ conditionalPanel(
 
 ### 2. **Perbandingan untuk Klasifikasi Stunting**
 ```r
-# Logika yang akan diimplementasi di server:
-# if (z_score >= -2) → status = "Normal"
-# else if (z_score >= -3 && z_score < -2) → status = "Stunting"
-# else if (z_score < -3) → status = "Stunting Berat"
+# Perbandingan untuk Status Gizi
+if(z_score >= -2) {
+  results$status <- "Normal"
+} else if(z_score >= -3 && z_score < -2) {
+  results$status <- "Stunting"  
+} else {
+  results$status <- "Stunting Berat"
+}
 ```
-**Kegunaan**: Mengklasifikasikan status gizi anak berdasarkan threshold Z-score WHO.
+**Kegunaan**: Mengklasifikasikan status gizi anak berdasarkan threshold Z-score WHO dengan operator >= dan &&.
 
 ### 3. **Boolean Logic dalam UI Controls**
 ```r
-# Baris 68, 143, 149: Status header box
+# Status header box
 solidHeader = TRUE
 ```
 **Kegunaan**: Mengatur style box dengan header solid (TRUE) atau transparan (FALSE).
 
 ```r
-# Baris 105: Default selection
+# Default selection
 selected = "Male"
-```
-**Kegunaan**: Menetapkan pilihan default jenis kelamin laki-laki.
-
-```r
-# Baris 183: Default checkbox state
 value = TRUE
 ```
-**Kegunaan**: Mengatur checkbox "Urutkan dari Tertinggi" aktif secara default.
+**Kegunaan**: Menetapkan pilihan default jenis kelamin laki-laki dan mengatur checkbox aktif secara default.
 
-### 4. **Logical AND/OR dalam Conditional**
+### 4. **Pengecekan Input Kosong**
 ```r
-# Dalam server logic untuk filter data:
-# if (input$table_search != "" && nchar(input$table_search) > 0)
+# OR operator untuk validasi input
+is.null(input$age_input) || input$age_input == ""
 ```
-**Kegunaan**: Memfilter tabel hanya jika search box tidak kosong DAN memiliki karakter.
+**Kegunaan**: Mengecek apakah input kosong atau NULL dengan operator OR (||).
 
-## f. Percabangan (Branching)
+### 5. **Filtering Data**
+```r
+# Operator == untuk memfilter data
+who_filtered <- who_data[who_data$sex == input$sex, ]
+```
+**Kegunaan**: Memfilter data WHO berdasarkan jenis kelamin yang dipilih user.
+
+### 6. **ifelse untuk Pewarnaan Chart**
+```r
+# Nested ifelse untuk conditional coloring
+color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
+                      ifelse(sorted_data$prevalensi >= 25, 'orange', 'yellow'))
+```
+**Kegunaan**: Menentukan warna chart berdasarkan tingkat prevalensi stunting dengan logika bersarang.
+
+## F. Percabangan (Branching)
 
 ### 1. **Conditional Panel - Tab Switching**
 ```r
-# Baris 93-112: Percabangan berdasarkan tab aktif
+# Percabangan berdasarkan tab aktif
 conditionalPanel(
   condition = "input.tabs == 'calculator'",
   hr(),
@@ -386,7 +492,7 @@ conditionalPanel(
 
 ### 2. **Tab Items - Multi-way Branching**
 ```r
-# Baris 119-121: Percabangan konten berdasarkan tab
+# Percabangan konten berdasarkan tab
 tabItems(
   tabItem(tabName = "calculator", 
     # Konten halaman kalkulator
@@ -404,9 +510,28 @@ tabItems(
 ```
 **Kegunaan**: Menentukan konten mana yang akan ditampilkan berdasarkan tab yang dipilih user.
 
-### 3. **Conditional Content dalam Tab**
+### 3. **If-Else untuk Status Gizi**
 ```r
-# Baris 201-206: Percabangan dalam tab box
+# Percabangan untuk menentukan status gizi
+if(z_score >= -2) {
+  results$status <- "Normal"
+  results$color <- "#28a745"  # hijau
+  results$status_text <- "Tinggi badan anak sesuai dengan standar WHO untuk usia ini."
+} else if(z_score >= -3 && z_score < -2) {
+  results$status <- "Stunting"
+  results$color <- "#ffc107"  # kuning
+  results$status_text <- "Tinggi badan anak sedikit di bawah standar WHO untuk usia ini."
+} else {
+  results$status <- "Stunting Berat"
+  results$color <- "#dc3545"  # merah
+  results$status_text <- "Tinggi badan anak signifikan di bawah standar WHO untuk usia ini."
+}
+```
+**Kegunaan**: Menentukan status gizi, warna indikator, dan teks penjelasan berdasarkan nilai Z-Score WHO.
+
+### 4. **Conditional Content dalam Tab**
+```r
+# Percabangan dalam tab box
 tabBox(
   width = 12,
   id = "nutritionTabs",
@@ -418,9 +543,20 @@ tabBox(
 ```
 **Kegunaan**: Membagi rekomendasi gizi berdasarkan kelompok usia dengan konten yang berbeda.
 
-### 4. **Dropdown Selection - Value-based Branching**
+### 5. **Conditional Display**
 ```r
-# Baris 174-177: Percabangan visualisasi
+# Percabangan untuk menampilkan nama anak
+if(input$name == "") {
+  return("Status Gizi Anak")
+} else {
+  return(paste("Status Gizi:", input$name))
+}
+```
+**Kegunaan**: Menampilkan nama anak jika diisi, atau teks default jika kosong.
+
+### 6. **Dropdown Selection - Value-based Branching**
+```r
+# Percabangan visualisasi
 selectInput("chart_type", "Tampilkan Berdasarkan:",
   choices = c("Persentase Stunting" = "percentage", 
               "Jumlah Kasus Stunting" = "cases",
@@ -429,30 +565,42 @@ selectInput("chart_type", "Tampilkan Berdasarkan:",
 ```
 **Kegunaan**: User dapat memilih jenis data yang ingin divisualisasikan dalam chart.
 
-## g. Pengulangan (Loops/Iteration)
+# G. Pengulangan (Loops/Iteration) - Identifikasi Lengkap
 
-### 1. **rep() - Numeric Repetition**
+## 1. **rep() - Numeric Repetition**
+
+### Mengulang Sequence Usia
 ```r
-# Baris 11: Mengulang sequence usia
+# Mengulang sequence usia untuk 2 gender
 rep(c(0, 3, 6, 9, 12, 15, 18, 24, 36, 48, 60), 2)
 ```
-**Kegunaan**: Mengulangi pola usia 2 kali untuk membuat dataset laki-laki dan perempuan.
+**Kegunaan**: Mengulangi pola usia dalam bulan sebanyak 2 kali untuk membuat dataset yang mencakup laki-laki dan perempuan dalam standar WHO.
 
+### Mengulang Elemen dengan Pattern
 ```r
-# Baris 12: Mengulang setiap elemen
+# Mengulang setiap elemen berurutan
 rep(c("Male", "Female"), each = 11)
 ```
-**Kegunaan**: Mengulang "Male" 11 kali, kemudian "Female" 11 kali untuk mapping gender-usia.
+**Kegunaan**: Mengulang "Male" sebanyak 11 kali, kemudian "Female" sebanyak 11 kali untuk mapping gender dengan rentang usia yang sesuai.
 
 ```r
-# Baris 27: Mengulang nilai konstan
+# Mengulang standar deviasi untuk kedua gender
+rep(c(1.8, 2.4, 2.7, 2.9, 3.3, 3.2, 3.3, 3.4, 3.8, 4.3, 4.9), 2)
+```
+**Kegunaan**: Mengulangi nilai standar deviasi tinggi badan untuk laki-laki dan perempuan dalam perhitungan Z-score WHO.
+
+### Mengulang Nilai Konstan
+```r
+# Mengulang tahun untuk semua provinsi
 tahun = rep(2023, 38)
 ```
-**Kegunaan**: Memberikan label tahun 2023 untuk semua 38 provinsi Indonesia.
+**Kegunaan**: Memberikan label tahun 2023 untuk semua 38 provinsi Indonesia dalam dataset stunting.
 
-### 2. **lapply() - List Iteration untuk UI Generation**
+## 2. **lapply() - List Iteration untuk UI Generation**
+
+### Iterasi untuk Cards Nutrisi Dasar
 ```r
-# Baris 235-245: Iterasi untuk membuat cards nutrisi
+# Membuat cards informasi nutrisi secara otomatis
 lapply(list(
   list("Protein", "egg", "Telur, ikan, ayam, daging, tempe, tahu, kacang-kacangan"),
   list("Kalsium", "bone", "Susu, keju, yogurt, ikan teri, sayuran hijau"),
@@ -468,10 +616,11 @@ lapply(list(
   )
 })
 ```
-**Kegunaan**: Membuat 4 card informasi nutrisi secara otomatis dengan struktur HTML yang sama.
+**Kegunaan**: Membuat 4 card informasi nutrisi secara otomatis dengan struktur HTML yang sama namun konten berbeda untuk setiap nutrisi penting.
 
+### Iterasi untuk Menu MPASI 6-12 Bulan
 ```r
-# Baris 290-300: Iterasi untuk menu MPASI
+# Generate cards menu MPASI
 lapply(list(
   list("Bubur susu + ikan", "fish", "Beras/tepung beras + ASI/susu formula + ikan hancur + wortel"),
   list("Pure buah", "apple-whole", "Pisang, alpukat, atau pepaya yang dihaluskan"),
@@ -487,257 +636,56 @@ lapply(list(
   )
 })
 ```
-**Kegunaan**: Generate 4 card contoh menu MPASI dengan template yang konsisten.
+**Kegunaan**: Generate 4 card contoh menu MPASI dengan template yang konsisten untuk memberikan variasi makanan balita usia 6-12 bulan.
 
-### 3. **Implicit Loops dalam Vector Creation**
+### Iterasi untuk Menu Balita 1-3 Tahun
 ```r
-# Baris 19-21: Membuat vector dengan 38 elemen
-jml_balita = c(394129, 946365, 377410, 368260, 209492, 588096, 107916, 532246, 
-               97246, 118145, 361697, 3087192, 1940103, 163458, 2213827, 760984, 
-               176827, 441000, 421347, 357582, 113911, 259391, 196073, 45742, 
-               131656, 167399, 564938, 157178, 84718, 89544, 132847, 80164, 
-               28128, 45583, 35146, 24201, 55031, 29252)
+# Membuat cards menu untuk balita 1-3 tahun
+lapply(list(
+  list("Nasi tim ayam", "bowl-rice", "Nasi + ayam + sayuran + kaldu"),
+  list("Sup ikan", "fish", "Ikan + wortel + kentang + buncis + kaldu"),
+  list("Bubur kacang merah", "seedling", "Kacang merah + santan + gula aren"),
+  list("Finger foods", "cookie", "Buah potong, roti, biskuit untuk melatih motorik")
+), function(x) {
+  div(class = "col-md-6",
+      div(class = "food-card",
+          icon(x[[2]], class = "fa-2x food-icon"),
+          h5(x[[1]]),
+          p(x[[3]])
+      )
+  )
+})
 ```
-**Kegunaan**: Menyimpan data jumlah balita untuk ke-38 provinsi Indonesia dalam satu operasi.
+**Kegunaan**: Membuat variasi menu untuk balita usia 1-3 tahun dengan mempertimbangkan perkembangan kemampuan makan dan kebutuhan gizi.
 
-### 4. **Iteration dalam rbind()**
+### Iterasi untuk Menu Balita 3-5 Tahun
 ```r
-# Baris 38: Menggabungkan data frame
-stunting_data_indonesia <- rbind(stunting_data_indonesia, total_row)
+# Generate cards untuk anak pra-sekolah
+lapply(list(
+  list("Nasi lengkap", "plate-wheat", "Nasi + lauk + sayur + buah"),
+  list("Bekal sekolah", "lunch-box", "Sandwich + buah + susu + camilan sehat"),
+  list("Makan keluarga", "users", "Menu yang sama dengan keluarga, porsi disesuaikan"),
+  list("Camilan sehat", "apple-whole", "Buah segar, yogurt, kacang-kacangan")
+), function(x) {
+  div(class = "col-md-6",
+      div(class = "food-card",
+          icon(x[[2]], class = "fa-2x food-icon"),
+          h5(x[[1]]),
+          p(x[[3]])
+      )
+  )
+})
 ```
-**Kegunaan**: Menambahkan baris total ke dataset utama dengan iterasi baris.
+**Kegunaan**: Membuat rekomendasi makanan untuk anak pra-sekolah yang sudah bisa makan seperti orang dewasa dengan porsi yang disesuaikan.
 
-
-# Analisis Objek Program NutriTrack Line 613-dst
-
-## A. Tipe Data
-
-### 1. **Character (String)**
+### Loop untuk UI Ranking Provinsi
 ```r
-input$name == ""
-# Menyimpan nama anak sebagai teks
-
-input$sex == "Male"
-# Menyimpan jenis kelamin ("Male" atau "Female")
-
-results$status <- "Normal"
-# Menyimpan status gizi anak ("Normal", "Stunting", "Stunting Berat")
-
-results$color <- "#28a745"
-# Menyimpan kode warna hex untuk visualisasi status
-```
-
-### 2. **Numeric**
-```r
-z_score <- (height() - median_height) / sd_height
-# Menyimpan nilai Z-Score hasil perhitungan status gizi
-
-results$zscore <- round(z_score, 2)
-# Menyimpan Z-Score yang dibulatkan 2 desimal
-
-age_num <- as.numeric(gsub("[^0-9.]", "", age_str))
-# Konversi teks input umur menjadi angka
-```
-
-### 3. **Integer**
-```r
-age_idx <- which(abs(who_data$age_months - age()) == min(abs(who_data$age_months - age())))
-# Indeks untuk mencari umur terdekat di data WHO
-
-closest_age_idx[1]
-# Mengambil indeks pertama dari hasil pencarian
-```
-
-### 4. **Logical (Boolean)**
-```r
-input$sort_data
-# TRUE/FALSE untuk mengurutkan data provinsi
-
-is.null(input$age_input) || input$age_input == ""
-# Mengecek apakah input kosong (TRUE/FALSE)
-```
-
-## B. Struktur Data
-
-### 1. **Data Frame**
-```r
-who_data
-# Data frame berisi standar pertumbuhan WHO dengan kolom:
-# - age_months: umur dalam bulan
-# - sex: jenis kelamin
-# - median_tb: median tinggi badan
-# - sd_tb: standar deviasi tinggi badan
-
-stunting_data_indonesia
-# Data frame prevalensi stunting per provinsi dengan kolom:
-# - provinsi: nama provinsi
-# - prevalensi: persentase stunting
-# - jml_balita: jumlah balita
-# - jml_stunting: jumlah kasus stunting
-# - tahun: tahun data
-```
-
-### 2. **List**
-```r
-results <- reactiveValues(
-  zscore = NULL,
-  status = NULL,
-  color = NULL,
-  status_text = NULL
-)
-# List reaktif untuk menyimpan hasil analisis gizi anak
-
-trend_data <- data.frame(
-  tahun = c(2018, 2019, 2021, 2022),
-  prevalensi = c(30.8, 27.7, 24.4, 21.6)
-)
-# Data frame untuk tren nasional stunting
-```
-
-### 3. **Vector**
-```r
-age_range <- seq(0, 60, by = 1)
-# Vector numerik berisi rentang umur 0-60 bulan
-
-color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
-                      ifelse(sorted_data$prevalensi >= 25, 'orange', 'yellow'))
-# Vector karakter berisi kode warna berdasarkan prevalensi
-```
-
-## C. Variable
-
-### 1. **Variable Input**
-```r
-age <- reactive({...})
-# Variable reaktif menyimpan umur anak dari input pengguna
-
-height <- reactive({...})
-# Variable reaktif menyimpan tinggi badan anak
-
-input$sex
-# Variable menyimpan jenis kelamin yang dipilih pengguna
-```
-
-### 2. **Variable Perhitungan**
-```r
-median_height <- who_data$median_tb[closest_age_idx]
-# Variable menyimpan median tinggi badan standar WHO
-
-sd_height <- who_data$sd_tb[closest_age_idx]
-# Variable menyimpan standar deviasi tinggi badan WHO
-
-z_score <- (height() - median_height) / sd_height
-# Variable menyimpan hasil perhitungan Z-Score
-```
-
-### 3. **Variable Output**
-```r
-results$status
-# Variable menyimpan status gizi ("Normal", "Stunting", "Stunting Berat")
-
-results$status_text
-# Variable menyimpan penjelasan status gizi untuk ditampilkan
-```
-
-## D. Operasi Aritmatika
-
-### 1. **Perhitungan Z-Score (Rumus Utama)**
-```r
-z_score <- (height() - median_height) / sd_height
-# Operasi: pengurangan, pembagian untuk menghitung status gizi
-```
-
-### 2. **Pembulatan**
-```r
-results$zscore <- round(z_score, 2)
-# Membulatkan Z-Score ke 2 desimal untuk tampilan
-```
-
-### 3. **Pencarian Nilai Terdekat**
-```r
-abs(who_data$age_months - age())
-# Operasi pengurangan dan nilai absolut untuk mencari umur terdekat di data WHO
-```
-
-### 4. **Sequence Generation**
-```r
-age_range <- seq(0, 60, by = 1)
-# Membuat rentang angka 0-60 dengan interval 1 untuk grafik
-```
-
-## E. Operasi Logika
-
-### 1. **Pengecekan Input Kosong**
-```r
-is.null(input$age_input) || input$age_input == ""
-# OR operator untuk mengecek input kosong atau NULL
-```
-
-### 2. **Perbandingan untuk Status Gizi**
-```r
-if(z_score >= -2) {
-  results$status <- "Normal"
-} else if(z_score >= -3 && z_score < -2) {
-  results$status <- "Stunting"  
-} else {
-  results$status <- "Stunting Berat"
-}
-# Operasi >= (lebih besar sama dengan) dan && (AND) untuk menentukan kategori stunting
-```
-
-### 3. **Filtering Data**
-```r
-who_filtered <- who_data[who_data$sex == input$sex, ]
-# Operator == untuk memfilter data berdasarkan jenis kelamin
-```
-
-## F. Percabangan
-
-### 1. **If-Else untuk Status Gizi**
-```r
-if(z_score >= -2) {
-  results$status <- "Normal"
-  results$color <- "#28a745"  # hijau
-  results$status_text <- "Tinggi badan anak sesuai dengan standar WHO untuk usia ini."
-} else if(z_score >= -3 && z_score < -2) {
-  results$status <- "Stunting"
-  results$color <- "#ffc107"  # kuning
-  results$status_text <- "Tinggi badan anak sedikit di bawah standar WHO untuk usia ini."
-} else {
-  results$status <- "Stunting Berat"
-  results$color <- "#dc3545"  # merah
-  results$status_text <- "Tinggi badan anak signifikan di bawah standar WHO untuk usia ini."
-}
-# Percabangan untuk menentukan status gizi berdasarkan Z-Score WHO
-```
-
-### 2. **Conditional Display**
-```r
-if(input$name == "") {
-  return("Status Gizi Anak")
-} else {
-  return(paste("Status Gizi:", input$name))
-}
-# Percabangan untuk menampilkan nama anak atau teks default
-```
-
-### 3. **ifelse untuk Pewarnaan Chart**
-```r
-color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
-                      ifelse(sorted_data$prevalensi >= 25, 'orange', 'yellow'))
-# Nested ifelse untuk menentukan warna berdasarkan tingkat prevalensi stunting
-```
-
-## G. Pengulangan
-
-### 1. **lapply untuk UI Generation**
-```r
+# Loop dinamis untuk ranking provinsi
 top_provinces_ui <- lapply(1:5, function(i) {
   province <- top_5$provinsi[i]
   value <- value_column[i]
   prevalensi <- top_5$prevalensi[i]
   
-  # Generate UI element untuk setiap provinsi
   div(
     class = "ranking-item",
     div(class = "ranking-number", span(i)),
@@ -751,17 +699,143 @@ top_provinces_ui <- lapply(1:5, function(i) {
     )
   )
 })
-# Loop untuk membuat 5 elemen UI peringkat provinsi dengan prevalensi tertinggi
 ```
+**Kegunaan**: Loop untuk membuat 5 elemen UI peringkat provinsi dengan prevalensi stunting tertinggi secara dinamis, termasuk nomor urut, nama provinsi, nilai, dan badge persentase.
 
-### 2. **which() untuk Pencarian Index**
+## 3. **which() dan Operasi Pencarian Index**
+
+### Loop Internal dalam which()
 ```r
+# Pencarian index dengan iterasi internal
 age_idx <- which(abs(who_data$age_months - age()) == min(abs(who_data$age_months - age())))
-# Loop internal dalam which() untuk mencari semua indeks yang memenuhi kondisi
 ```
+**Kegunaan**: Loop internal dalam fungsi which() untuk mencari semua indeks yang memenuhi kondisi pencarian umur terdekat dalam dataset WHO.
 
-### 3. **Iterasi dalam Filtering**
+### Loop untuk Filtering Data
 ```r
-closest_age_idx <- intersect(age_idx, sex_idx)
-# Operasi set yang melakukan iterasi untuk mencari irisan dua vector
+# Filter data berdasarkan jenis kelamin
+who_filtered <- who_data[who_data$sex == input$sex, ]
 ```
+**Kegunaan**: Iterasi implicit untuk memfilter baris data WHO yang sesuai dengan jenis kelamin yang dipilih user.
+
+### Intersection dengan Loop
+```r
+# Operasi set dengan iterasi
+closest_age_idx <- intersect(age_idx, sex_idx)
+if(length(closest_age_idx) > 0) {
+  closest_age_idx[1]
+} else {
+  age_idx[1]
+}
+```
+**Kegunaan**: Mencari intersection antara index usia dan jenis kelamin, kemudian mengambil index pertama jika ditemukan kecocokan.
+
+## 4. **Implicit Loops dalam Vector Operations**
+
+### Vector Creation dengan Multiple Elements
+```r
+# Membuat vector dengan 38 elemen (semua provinsi Indonesia)
+jml_balita = c(394129, 946365, 377410, 368260, 209492, 588096, 107916, 532246, 
+               97246, 118145, 361697, 3087192, 1940103, 163458, 2213827, 760984, 
+               176827, 441000, 421347, 357582, 113911, 259391, 196073, 45742, 
+               131656, 167399, 564938, 157178, 84718, 89544, 132847, 80164, 
+               28128, 45583, 35146, 24201, 55031, 29252)
+```
+**Kegunaan**: Menyimpan data jumlah balita untuk ke-38 provinsi Indonesia dalam satu operasi vector dengan iterasi implicit.
+
+### Vector Operations dengan Perhitungan
+```r
+# Operasi vector untuk semua provinsi
+prevalensi = c(6.2, 3.0, 8.1, 2.5, 2.7, 1.4, 3.9, 2.8, 3.3, 3.1, 1.6, 4.9, 8.6, 7.7, 
+               5.8, 2.9, 3.5, 12.7, 14.8, 8.7, 11.1, 8.2, 9.0, 6.7, 1.7, 10.4, 7.3, 
+               10.3, 5.4, 23.9, 5.4, 8.7, 9.3, 9.9, 4.4, 12.7, 10.1, 7.8)
+```
+**Kegunaan**: Menyimpan persentase prevalensi stunting untuk semua provinsi dengan operasi vector yang melakukan iterasi pada setiap elemen.
+
+## 5. **seq() - Sequence Generation dengan Loop**
+
+### Membuat Rentang untuk Visualisasi
+```r
+# Sequence untuk grafik pertumbuhan
+age_range <- seq(0, 60, by = 1)
+```
+**Kegunaan**: Membuat sequence angka dari 0 hingga 60 dengan interval 1 untuk sumbu X pada grafik kurva pertumbuhan WHO.
+
+### Sequence untuk Data Processing
+```r
+# Rentang index untuk lapply
+lapply(1:5, function(i) { ... })
+```
+**Kegunaan**: Membuat sequence 1 sampai 5 untuk iterasi dalam lapply, menghasilkan 5 elemen ranking teratas.
+
+## 6. **rbind() - Row-wise Iteration**
+
+### Menggabungkan Data dengan Iterasi Baris
+```r
+# Menambahkan total nasional ke dataset
+stunting_data_indonesia <- rbind(stunting_data_indonesia, total_row)
+```
+**Kegunaan**: Menggabungkan data frame provinsi dengan baris total nasional menggunakan iterasi baris untuk membuat dataset lengkap.
+
+### Data Frame Binding dengan Multiple Rows
+```r
+# Membuat data frame dengan rbind multiple
+total_row <- data.frame(
+  provinsi = "TOTAL",
+  jml_balita = 15904224,
+  jml_stunting = 728559 + 238660,
+  pendek = 728559,
+  sangat_pendek = 238660,
+  prevalensi = 6.1,
+  tahun = 2023
+)
+```
+**Kegunaan**: Membuat baris agregat yang akan digabungkan dengan dataset utama melalui operasi rbind.
+
+## 7. **Conditional Loops dalam Server Logic**
+
+### Loop dengan Reactive Context
+```r
+# Reactive expression dengan loop internal
+observe({
+  # Loop untuk update UI berdasarkan input
+  if(!is.null(input$chart_type)) {
+    # Iterasi untuk update chart berdasarkan pilihan
+    switch(input$chart_type,
+           "percentage" = { ... },
+           "cases" = { ... },
+           "toddlers" = { ... })
+  }
+})
+```
+**Kegunaan**: Melakukan iterasi reaktif untuk mengupdate visualisasi chart berdasarkan pilihan user dengan switching yang berulang.
+
+### Loop dalam Data Sorting
+```r
+# Sorting dengan iterasi internal
+sorted_data <- stunting_data_indonesia[order(stunting_data_indonesia$prevalensi, 
+                                           decreasing = input$sort_data), ]
+```
+**Kegunaan**: Operasi sorting yang melakukan iterasi internal untuk mengurutkan data berdasarkan prevalensi stunting.
+
+## 8. **Nested Loops dalam ifelse()**
+
+### Multiple Conditional dengan Loop
+```r
+# Nested ifelse untuk pewarnaan chart
+color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
+                      ifelse(sorted_data$prevalensi >= 25, 'orange', 
+                             ifelse(sorted_data$prevalensi >= 20, 'yellow', 'green')))
+```
+**Kegunaan**: Melakukan iterasi pada setiap elemen vector prevalensi untuk menentukan warna berdasarkan threshold yang berbeda dengan nested conditions.
+
+### Loop untuk Status Classification
+```r
+# Iterasi untuk klasifikasi status gizi
+status_classification <- sapply(z_scores, function(z) {
+  if(z >= -2) return("Normal")
+  else if(z >= -3) return("Stunting")
+  else return("Stunting Berat")
+})
+```
+**Kegunaan**: Melakukan iterasi pada vector Z-scores untuk mengklasifikasikan status gizi setiap anak dengan sapply loop.
