@@ -1,4 +1,4 @@
-# Identifikasi Lengkap Komponen Programming dalam Aplikasi NutriTrack
+# Identifikasi Lengkap Komponen Programming dalam Aplikasi NutriTrack Line 1-612
 
 ## a. Tipe Data
 
@@ -506,3 +506,262 @@ jml_balita = c(394129, 946365, 377410, 368260, 209492, 588096, 107916, 532246,
 stunting_data_indonesia <- rbind(stunting_data_indonesia, total_row)
 ```
 **Kegunaan**: Menambahkan baris total ke dataset utama dengan iterasi baris.
+
+
+# Analisis Objek Program NutriTrack Line 613-dst
+
+## A. Tipe Data
+
+### 1. **Character (String)**
+```r
+input$name == ""
+# Menyimpan nama anak sebagai teks
+
+input$sex == "Male"
+# Menyimpan jenis kelamin ("Male" atau "Female")
+
+results$status <- "Normal"
+# Menyimpan status gizi anak ("Normal", "Stunting", "Stunting Berat")
+
+results$color <- "#28a745"
+# Menyimpan kode warna hex untuk visualisasi status
+```
+
+### 2. **Numeric**
+```r
+z_score <- (height() - median_height) / sd_height
+# Menyimpan nilai Z-Score hasil perhitungan status gizi
+
+results$zscore <- round(z_score, 2)
+# Menyimpan Z-Score yang dibulatkan 2 desimal
+
+age_num <- as.numeric(gsub("[^0-9.]", "", age_str))
+# Konversi teks input umur menjadi angka
+```
+
+### 3. **Integer**
+```r
+age_idx <- which(abs(who_data$age_months - age()) == min(abs(who_data$age_months - age())))
+# Indeks untuk mencari umur terdekat di data WHO
+
+closest_age_idx[1]
+# Mengambil indeks pertama dari hasil pencarian
+```
+
+### 4. **Logical (Boolean)**
+```r
+input$sort_data
+# TRUE/FALSE untuk mengurutkan data provinsi
+
+is.null(input$age_input) || input$age_input == ""
+# Mengecek apakah input kosong (TRUE/FALSE)
+```
+
+## B. Struktur Data
+
+### 1. **Data Frame**
+```r
+who_data
+# Data frame berisi standar pertumbuhan WHO dengan kolom:
+# - age_months: umur dalam bulan
+# - sex: jenis kelamin
+# - median_tb: median tinggi badan
+# - sd_tb: standar deviasi tinggi badan
+
+stunting_data_indonesia
+# Data frame prevalensi stunting per provinsi dengan kolom:
+# - provinsi: nama provinsi
+# - prevalensi: persentase stunting
+# - jml_balita: jumlah balita
+# - jml_stunting: jumlah kasus stunting
+# - tahun: tahun data
+```
+
+### 2. **List**
+```r
+results <- reactiveValues(
+  zscore = NULL,
+  status = NULL,
+  color = NULL,
+  status_text = NULL
+)
+# List reaktif untuk menyimpan hasil analisis gizi anak
+
+trend_data <- data.frame(
+  tahun = c(2018, 2019, 2021, 2022),
+  prevalensi = c(30.8, 27.7, 24.4, 21.6)
+)
+# Data frame untuk tren nasional stunting
+```
+
+### 3. **Vector**
+```r
+age_range <- seq(0, 60, by = 1)
+# Vector numerik berisi rentang umur 0-60 bulan
+
+color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
+                      ifelse(sorted_data$prevalensi >= 25, 'orange', 'yellow'))
+# Vector karakter berisi kode warna berdasarkan prevalensi
+```
+
+## C. Variable
+
+### 1. **Variable Input**
+```r
+age <- reactive({...})
+# Variable reaktif menyimpan umur anak dari input pengguna
+
+height <- reactive({...})
+# Variable reaktif menyimpan tinggi badan anak
+
+input$sex
+# Variable menyimpan jenis kelamin yang dipilih pengguna
+```
+
+### 2. **Variable Perhitungan**
+```r
+median_height <- who_data$median_tb[closest_age_idx]
+# Variable menyimpan median tinggi badan standar WHO
+
+sd_height <- who_data$sd_tb[closest_age_idx]
+# Variable menyimpan standar deviasi tinggi badan WHO
+
+z_score <- (height() - median_height) / sd_height
+# Variable menyimpan hasil perhitungan Z-Score
+```
+
+### 3. **Variable Output**
+```r
+results$status
+# Variable menyimpan status gizi ("Normal", "Stunting", "Stunting Berat")
+
+results$status_text
+# Variable menyimpan penjelasan status gizi untuk ditampilkan
+```
+
+## D. Operasi Aritmatika
+
+### 1. **Perhitungan Z-Score (Rumus Utama)**
+```r
+z_score <- (height() - median_height) / sd_height
+# Operasi: pengurangan, pembagian untuk menghitung status gizi
+```
+
+### 2. **Pembulatan**
+```r
+results$zscore <- round(z_score, 2)
+# Membulatkan Z-Score ke 2 desimal untuk tampilan
+```
+
+### 3. **Pencarian Nilai Terdekat**
+```r
+abs(who_data$age_months - age())
+# Operasi pengurangan dan nilai absolut untuk mencari umur terdekat di data WHO
+```
+
+### 4. **Sequence Generation**
+```r
+age_range <- seq(0, 60, by = 1)
+# Membuat rentang angka 0-60 dengan interval 1 untuk grafik
+```
+
+## E. Operasi Logika
+
+### 1. **Pengecekan Input Kosong**
+```r
+is.null(input$age_input) || input$age_input == ""
+# OR operator untuk mengecek input kosong atau NULL
+```
+
+### 2. **Perbandingan untuk Status Gizi**
+```r
+if(z_score >= -2) {
+  results$status <- "Normal"
+} else if(z_score >= -3 && z_score < -2) {
+  results$status <- "Stunting"  
+} else {
+  results$status <- "Stunting Berat"
+}
+# Operasi >= (lebih besar sama dengan) dan && (AND) untuk menentukan kategori stunting
+```
+
+### 3. **Filtering Data**
+```r
+who_filtered <- who_data[who_data$sex == input$sex, ]
+# Operator == untuk memfilter data berdasarkan jenis kelamin
+```
+
+## F. Percabangan
+
+### 1. **If-Else untuk Status Gizi**
+```r
+if(z_score >= -2) {
+  results$status <- "Normal"
+  results$color <- "#28a745"  # hijau
+  results$status_text <- "Tinggi badan anak sesuai dengan standar WHO untuk usia ini."
+} else if(z_score >= -3 && z_score < -2) {
+  results$status <- "Stunting"
+  results$color <- "#ffc107"  # kuning
+  results$status_text <- "Tinggi badan anak sedikit di bawah standar WHO untuk usia ini."
+} else {
+  results$status <- "Stunting Berat"
+  results$color <- "#dc3545"  # merah
+  results$status_text <- "Tinggi badan anak signifikan di bawah standar WHO untuk usia ini."
+}
+# Percabangan untuk menentukan status gizi berdasarkan Z-Score WHO
+```
+
+### 2. **Conditional Display**
+```r
+if(input$name == "") {
+  return("Status Gizi Anak")
+} else {
+  return(paste("Status Gizi:", input$name))
+}
+# Percabangan untuk menampilkan nama anak atau teks default
+```
+
+### 3. **ifelse untuk Pewarnaan Chart**
+```r
+color_scale <- ifelse(sorted_data$prevalensi >= 30, 'red',
+                      ifelse(sorted_data$prevalensi >= 25, 'orange', 'yellow'))
+# Nested ifelse untuk menentukan warna berdasarkan tingkat prevalensi stunting
+```
+
+## G. Pengulangan
+
+### 1. **lapply untuk UI Generation**
+```r
+top_provinces_ui <- lapply(1:5, function(i) {
+  province <- top_5$provinsi[i]
+  value <- value_column[i]
+  prevalensi <- top_5$prevalensi[i]
+  
+  # Generate UI element untuk setiap provinsi
+  div(
+    class = "ranking-item",
+    div(class = "ranking-number", span(i)),
+    div(class = "ranking-content", 
+        h4(province),
+        div(class = "ranking-details",
+            span(value_format(value), class = "ranking-value"),
+            tags$span(class = paste0("label label-", badge_color), 
+                      paste0(prevalensi, "%"))
+        )
+    )
+  )
+})
+# Loop untuk membuat 5 elemen UI peringkat provinsi dengan prevalensi tertinggi
+```
+
+### 2. **which() untuk Pencarian Index**
+```r
+age_idx <- which(abs(who_data$age_months - age()) == min(abs(who_data$age_months - age())))
+# Loop internal dalam which() untuk mencari semua indeks yang memenuhi kondisi
+```
+
+### 3. **Iterasi dalam Filtering**
+```r
+closest_age_idx <- intersect(age_idx, sex_idx)
+# Operasi set yang melakukan iterasi untuk mencari irisan dua vector
+```
